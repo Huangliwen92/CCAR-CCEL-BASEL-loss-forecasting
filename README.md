@@ -39,4 +39,3 @@ This framework is built to align with US regulatory expectations and standard fi
 ccar.load_scenario('scenarios/severely_adverse.csv')
 results = ccar.run_projection('data/loan_tape.csv')
 
-print(f"Minimum CET1: {results.min_cet1_ratio}%")
