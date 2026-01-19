@@ -29,14 +29,13 @@ The engine projects portfolio health from the **Jump-off date** through 9 subseq
 
 ---
 
-## Quick Start
-To execute a 9-quarter projection:
+## Methodology Reference
 
-```python
-from models.stress_engine import CCARRunner
+This framework is built to align with US regulatory expectations and standard financial engineering practices:
 
-# Initialize and run
-ccar = CCARRunner(jump_off_date='2025-12-31')
+* **SR 11-7:** Guidance on **Model Risk Management**. This repository includes placeholders for effective challenge, backtesting, and sensitivity analysis.
+* **12 CFR Part 225:** Adheres to the Federal Reserve regulations regarding **Capital Plan** requirements and annual stress testing cycles.
+* **Vasicek Single Factor Model:** The core mathematical engine used for translating macroeconomic shocks into **Point-in-Time (PIT)** default probabilities.
 ccar.load_scenario('scenarios/severely_adverse.csv')
 results = ccar.run_projection('data/loan_tape.csv')
 
