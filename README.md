@@ -1,1 +1,43 @@
-his README description focuses exclusively on CCAR (Comprehensive Capital Analysis and Review). It is tailored for a professional risk management portfolio, emphasizing stress-testing under the Federal Reserve's regulatory framework.CCAR-9Q: Supervisory Stress Testing & Capital ProjectionMotivationThis repository provides a quantitative framework for Comprehensive Capital Analysis and Review (CCAR), specifically focusing on the 9-quarter (2.25 years) planning horizon. The goal is to evaluate whether a financial institution has sufficient capital to continue operations and lending during periods of extreme economic stress.Unlike standard baseline forecasting, this framework utilizes Supervisory Stress Scenarios (Base, Adverse, and Severely Adverse). It models the "Peak-to-Trough" impact on capital ratios by projecting quarterly Net Charge-Offs (NCOs) and Pre-Provision Net Revenue (PPNR) conditioned on macroeconomic shocks like spikes in unemployment, equity market crashes, and GDP contraction.The 9-Quarter Planning HorizonThe models in this repository are designed to project the financial health of a portfolio from the "Jump-off" date through the following nine quarters.Quarters 1–4: Capture the immediate impact of the economic shock.Quarters 5–8: Capture the peak delinquency and default rates.Quarter 9: Evaluates the bank's ability to maintain capital buffers as the scenario stabilizes.Repository Structuresrc/modelssatellite_models.py: Logistic and OLS regression models that link portfolio performance (PD/LGD) to macroeconomic variables ($Unemployment$, $HPI$, $GDP$).ppnr_engine.py: Forecasts Pre-Provision Net Revenue, including interest income and non-interest expenses under stress.rwa_calculator.py: Computes Risk-Weighted Assets over the 9-quarter horizon.src/projectionsloss_projection.py: The core engine that rolls the portfolio forward quarter-by-quarter.capital_aggregator.py: Aggregates losses and revenue to calculate the CET1 (Common Equity Tier 1) ratio at each point in time.scenarios/Contains the yearly Fed-provided macroeconomic data:fed_2025_severely_adverse.csvfed_2025_baseline.csv
+# CCAR-9Q: Supervisory Stress Testing Framework
+
+## Objective
+This repository provides a quantitative framework for **Comprehensive Capital Analysis and Review (CCAR)**, specifically focusing on the 9-quarter planning horizon. 
+
+The goal is to evaluate capital adequacy under **Supervisory Stress Scenarios** (Base, Adverse, and Severely Adverse). We model the "Peak-to-Trough" impact on capital by projecting:
+* **PD/LGD/EAD:** Credit risk parameters.
+* **NCOs:** Net Charge-Offs.
+* **CET1 Ratio:** Common Equity Tier 1 capital health.
+
+---
+
+## The 9-Quarter Planning Horizon
+The engine projects portfolio health from the **Jump-off date** through 9 subsequent quarters:
+1. **Initial Shock (Q1-Q3):** Macroeconomic variables (Unemployment, GDP) deteriorate.
+2. **Peak Stress (Q4-Q7):** Defaults and losses reach their maximum.
+3. **Stabilization (Q8-Q9):** Assessment of capital recovery.
+
+---
+
+## Repository Structure
+
+| Directory | Description |
+| :--- | :--- |
+| `src/models` | Satellite models linking macro variables to risk. |
+| `src/projections` | The engine that "rolls" the portfolio forward. |
+| `scenarios/` | Fed-provided CSV files for stress paths. |
+| `notebooks/` | EDA and visualization of loss curves. |
+
+---
+
+## Quick Start
+To execute a 9-quarter projection:
+
+```python
+from models.stress_engine import CCARRunner
+
+# Initialize and run
+ccar = CCARRunner(jump_off_date='2025-12-31')
+ccar.load_scenario('scenarios/severely_adverse.csv')
+results = ccar.run_projection('data/loan_tape.csv')
+
+print(f"Minimum CET1: {results.min_cet1_ratio}%")
